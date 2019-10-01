@@ -1,5 +1,5 @@
 const mapglApi = {
-    type: 'mapgl',
+    type: '2gis',
 
     map: undefined,
     container: undefined,
@@ -24,6 +24,8 @@ const mapglApi = {
         this.map = new mapgl.Map(this.container, {
             center: [state.lng, state.lat],
             zoom: state.zoom,
+            rotation: state.rotation,
+            pitch: state.pitch,
         });
 
         window.addEventListener('resize', () => this.map.invalidateSize());
@@ -53,6 +55,8 @@ const mapglApi = {
     },
 
     hide() {
-        this.container.style.display = 'none';
+        if (this.container) {
+            this.container.style.display = 'none';
+        }
     },
 };

@@ -26,6 +26,8 @@ const mapboxApi = {
         this.map = new mapboxgl.Map({
             center: [state.lng, state.lat],
             zoom: state.zoom - 1,
+            pitch: state.pitch,
+            bearing: -state.rotation,
             container: this.container,
             style: 'mapbox://styles/mapbox/streets-v11',
         });
@@ -57,6 +59,8 @@ const mapboxApi = {
     },
 
     hide() {
-        this.container.style.display = 'none';
+        if (this.container) {
+            this.container.style.display = 'none';
+        }
     },
 };

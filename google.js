@@ -54,6 +54,8 @@ const googleApi = {
     },
 
     hide() {
-        this.container.style.display = 'none';
+        if (this.container) {
+            this.container.style.display = 'none';
+        }
     },
 };

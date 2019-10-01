@@ -7,8 +7,33 @@
         pitch: 0,
     };
 
+    const query = window.parseQuery();
+    if (query.lng !== undefined) {
+        state.lng = parseFloat(query.lng);
+    }
+    if (query.lat !== undefined) {
+        state.lat = parseFloat(query.lat);
+    }
+    if (query.zoom !== undefined) {
+        state.zoom = parseFloat(query.zoom);
+    }
+    if (query.rotation !== undefined) {
+        state.rotation = parseFloat(query.rotation);
+    }
+    if (query.pitch !== undefined) {
+        state.pitch = parseFloat(query.pitch);
+    }
+
+    const list = {
+        google: googleApi,
+        mapbox: mapboxApi,
+    };
+
     const firstApi = mapglApi;
-    let secondApi;
+    let secondApi = list.google;
+    if (query.compare !== undefined && list[query.compare]) {
+        secondApi = list[query.compare];
+    }
 
     let activeApi;
     let activeTimeout;
@@ -32,6 +57,8 @@
             state.zoom = params.zoom;
             state.rotation = params.rotation;
             state.pitch = params.pitch;
+
+            history.replaceState({}, document.title, window.buildQuery(params, secondApi.type));
         }
 
         if (firstApi === api) {
@@ -46,11 +73,7 @@
     };
 
     firstApi.init('map1');
-
-    const list = {
-        Google: googleApi,
-        Mapbox: mapboxApi,
-    };
+    secondApi.init('map2');
 
     const select = document.getElementById('select');
     for (const name in list) {
@@ -67,12 +90,12 @@
 
         secondApi = list[select.value];
         secondApi.init('map2');
+
+        history.replaceState({}, document.title, window.buildQuery(state, secondApi.type));
     };
 
     select.addEventListener('change', onChange);
-
-    select.value = Object.keys(list)[0];
-    onChange();
+    select.value = secondApi.type;
 
     /**
      * Callback, который вызывается по загрузке скриптов карт
