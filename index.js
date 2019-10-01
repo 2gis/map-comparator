@@ -35,13 +35,25 @@
         secondApi = list[query.compare];
     }
 
+    let updateUrlTimeout;
+    function updateUrl() {
+        if (updateUrlTimeout) {
+            return;
+        }
+
+        updateUrlTimeout = setTimeout(() => {
+            history.replaceState({}, document.title, window.buildQuery(state, secondApi.type));
+            updateUrlTimeout = undefined;
+        }, 1000);
+    }
+
     let activeApi;
     let activeTimeout;
 
     /**
      * Функцию обновляет положение карты, с которой пользователь сейчас не взаимодействует
      * Считается, что пользователь взаимодействует с конкретной картой, если:
-     * 1. Другая карта не меняла своего положения в течении последних 500 секунд
+     * 1. Другая карта не меняла своего положения в течении последних 200 мс
      * 2. Ее положение изменилось
      */
     window.updateAnotherMap = (api, params) => {
@@ -50,7 +62,7 @@
             clearTimeout(activeTimeout);
             activeTimeout = setTimeout(() => {
                 activeApi = undefined;
-            }, 500);
+            }, 200);
 
             state.lng = params.lng;
             state.lat = params.lat;
@@ -58,7 +70,7 @@
             state.rotation = params.rotation;
             state.pitch = params.pitch;
 
-            history.replaceState({}, document.title, window.buildQuery(params, secondApi.type));
+            updateUrl();
         }
 
         if (firstApi === api) {
@@ -91,7 +103,7 @@
         secondApi = list[select.value];
         secondApi.init('map2');
 
-        history.replaceState({}, document.title, window.buildQuery(state, secondApi.type));
+        updateUrl();
     };
 
     select.addEventListener('change', onChange);
