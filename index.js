@@ -27,6 +27,8 @@
     const list = {
         google: googleApi,
         mapbox: mapboxApi,
+        here: hereApi,
+        yandex: yandexApi,
     };
 
     const firstApi = mapglApi;
@@ -120,4 +122,6 @@
             secondApi.init('map2');
         }
     };
+
+    ymaps.ready(window.apiLoaded);
 })();

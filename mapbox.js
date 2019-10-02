@@ -10,7 +10,6 @@ const mapboxApi = {
         }
 
         if (this.map && this.container) {
-            this.container.style.display = 'block';
             this.update();
             return;
         }
@@ -59,8 +58,11 @@ const mapboxApi = {
     },
 
     hide() {
-        if (this.container) {
-            this.container.style.display = 'none';
+        if (this.container && this.map) {
+            this.map.remove();
+            this.container.parentElement.removeChild(this.container);
+            this.map = undefined;
+            this.container = undefined;
         }
     },
 };

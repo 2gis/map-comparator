@@ -1,11 +1,11 @@
-const mapglApi = {
-    type: '2gis',
+const yandexApi = {
+    type: 'yandex',
 
     map: undefined,
     container: undefined,
 
     init(elementId) {
-        if (!window.mapgl) {
+        if (!window.ymaps || !window.ymaps.Map) {
             return;
         }
 
@@ -20,26 +20,20 @@ const mapglApi = {
         const wrapper = document.getElementById(elementId);
         wrapper.appendChild(this.container);
 
-        this.map = new mapgl.Map(this.container, {
-            center: [state.lng, state.lat],
+        this.map = new ymaps.Map(this.container, {
+            center: [state.lat, state.lng],
             zoom: state.zoom,
-            rotation: state.rotation,
-            pitch: state.pitch,
-            zoomControl: false,
+            controls: ['zoomControl'],
         });
 
-        new mapgl.ZoomControl(this.map, { position: 'topLeft' });
-
-        window.addEventListener('resize', () => this.map.invalidateSize());
-
-        this.map.on('move', () => {
+        this.map.events.add('boundschange', () => {
             const center = this.map.getCenter();
             window.updateAnotherMap(this, {
-                lng: center[0],
-                lat: center[1],
+                lng: center[1],
+                lat: center[0],
                 zoom: this.map.getZoom(),
-                rotation: this.map.getRotation(),
-                pitch: this.map.getPitch(),
+                rotation: 0,
+                pitch: 0,
             });
         });
     },
@@ -49,11 +43,9 @@ const mapglApi = {
             return;
         }
 
-        const { lng, lat, zoom, pitch, rotation } = state;
-        this.map.setCenter([lng, lat], { animate: false });
+        const { lng, lat, zoom } = state;
+        this.map.setCenter([lat, lng]);
         this.map.setZoom(zoom);
-        this.map.setRotation(rotation, { animate: false });
-        this.map.setPitch(pitch, { animate: false });
     },
 
     hide() {

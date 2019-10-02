@@ -21,13 +21,27 @@ const googleApi = {
         const wrapper = document.getElementById(elementId);
         wrapper.appendChild(this.container);
 
+        const styledMapType = new google.maps.StyledMapType([
+            {
+                featureType: 'poi',
+                stylers: [
+                    {
+                        visibility: 'off',
+                    },
+                ],
+            },
+        ]);
+
         this.map = new google.maps.Map(this.container, {
             center: { lng: state.lng, lat: state.lat },
             zoom: state.zoom,
             mapTypeControl: false,
             streetViewControl: false,
             fullscreenControl: false,
+            clickableIcons: false,
         });
+        this.map.mapTypes.set('styled_map', styledMapType);
+        this.map.setMapTypeId('styled_map');
 
         const onMove = () => {
             const center = this.map.getCenter();

@@ -1,14 +1,10 @@
-const mapglApi = {
-    type: '2gis',
+const hereApi = {
+    type: 'here',
 
     map: undefined,
     container: undefined,
 
     init(elementId) {
-        if (!window.mapgl) {
-            return;
-        }
-
         if (this.map && this.container) {
             this.update();
             return;
@@ -20,26 +16,26 @@ const mapglApi = {
         const wrapper = document.getElementById(elementId);
         wrapper.appendChild(this.container);
 
-        this.map = new mapgl.Map(this.container, {
-            center: [state.lng, state.lat],
+        const platform = new H.service.Platform({
+            apikey: 'H1o40dF42gBblCC0GUAH_qtINc_siLJD3nmbBhoz-j4',
+        });
+        const maptypes = platform.createDefaultLayers();
+        this.map = new H.Map(this.container, maptypes.vector.normal.map, {
             zoom: state.zoom,
-            rotation: state.rotation,
-            pitch: state.pitch,
-            zoomControl: false,
+            center: { lng: state.lng, lat: state.lat },
         });
 
-        new mapgl.ZoomControl(this.map, { position: 'topLeft' });
+        window.addEventListener('resize', () => this.map.getViewPort().resize());
 
-        window.addEventListener('resize', () => this.map.invalidateSize());
-
-        this.map.on('move', () => {
+        new H.mapevents.Behavior(new H.mapevents.MapEvents(this.map));
+        this.map.addEventListener('mapviewchange', () => {
             const center = this.map.getCenter();
             window.updateAnotherMap(this, {
-                lng: center[0],
-                lat: center[1],
+                lng: center.lng,
+                lat: center.lat,
                 zoom: this.map.getZoom(),
-                rotation: this.map.getRotation(),
-                pitch: this.map.getPitch(),
+                rotation: 0,
+                pitch: 0,
             });
         });
     },
@@ -49,16 +45,14 @@ const mapglApi = {
             return;
         }
 
-        const { lng, lat, zoom, pitch, rotation } = state;
-        this.map.setCenter([lng, lat], { animate: false });
+        const { lng, lat, zoom } = state;
+        this.map.setCenter({ lng, lat });
         this.map.setZoom(zoom);
-        this.map.setRotation(rotation, { animate: false });
-        this.map.setPitch(pitch, { animate: false });
     },
 
     hide() {
         if (this.container && this.map) {
-            this.map.destroy();
+            this.map.dispose();
             this.container.parentElement.removeChild(this.container);
             this.map = undefined;
             this.container = undefined;
