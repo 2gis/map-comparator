@@ -26,6 +26,7 @@ const mapglApi = {
             rotation: state.rotation,
             pitch: state.pitch,
             zoomControl: false,
+            key: '042b5b75-f847-4f2a-b695-b5f58adc9dfd',
         });
 
         new mapgl.ZoomControl(this.map, { position: 'topLeft' });
