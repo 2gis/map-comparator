@@ -23,8 +23,11 @@ const yandexApi = {
         this.map = new ymaps.Map(this.container, {
             center: [state.lat, state.lng],
             zoom: state.zoom,
-            controls: ['zoomControl'],
+            controls: ['zoomControl', 'typeSelector'],
         });
+
+        const typeSelector = this.map.controls.get('typeSelector');
+        typeSelector.options.set('position', { top: 10, left: 10 });
 
         this.map.events.add('boundschange', () => {
             const center = this.map.getCenter();
