@@ -22,6 +22,11 @@ const mapboxApi = {
 
         mapboxgl.accessToken =
             'pk.eyJ1IjoidHJ1ZmkiLCJhIjoiY2lrcW1pdzU4MDEyanUwbTIwZzJ1bmY4dSJ9.5qW-pRcgah2nQIWpGKwHRg';
+        mapboxgl.setRTLTextPlugin(
+            'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js',
+            null,
+        );
+
         this.map = new mapboxgl.Map({
             center: [state.lng, state.lat],
             zoom: state.zoom - 1,
