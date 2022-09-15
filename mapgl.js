@@ -28,6 +28,7 @@ const mapglApi = {
             zoomControl: false,
             key: '042b5b75-f847-4f2a-b695-b5f58adc9dfd',
             style: 'eb10e2c3-3c28-4b81-b74b-859c9c4cf47e',
+            useRtlTextPlugin: 'always-on',
         });
 
         new mapgl.ZoomControl(this.map, { position: 'topLeft' });
