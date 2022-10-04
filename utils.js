@@ -15,7 +15,7 @@
         return res;
     };
 
-    window.buildQuery = (options, compare) => {
+    window.buildQuery = (options, compare, lang) => {
         const params = [];
 
         const rotation = Math.round(options.rotation);
@@ -43,6 +43,8 @@
         }
 
         params.push({ key: 'compare', value: compare });
+
+        params.push({ key: 'lang', value: options.lang });
 
         return params.reduce((string, param, index) => {
             return string + (index === 0 ? '?' : '&') + param.key + '=' + param.value;

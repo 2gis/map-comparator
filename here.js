@@ -19,7 +19,9 @@ const hereApi = {
         const platform = new H.service.Platform({
             apikey: 'H1o40dF42gBblCC0GUAH_qtINc_siLJD3nmbBhoz-j4',
         });
-        const maptypes = platform.createDefaultLayers();
+        const maptypes = platform.createDefaultLayers({
+            lg: state.lang,
+        });
         this.map = new H.Map(this.container, maptypes.vector.normal.map, {
             zoom: state.zoom,
             center: { lng: state.lng, lat: state.lat },

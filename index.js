@@ -5,6 +5,7 @@
         zoom: 17,
         rotation: 0,
         pitch: 0,
+        lang: 'en',
     };
 
     const query = window.parseQuery();
@@ -23,6 +24,9 @@
     if (query.pitch !== undefined) {
         state.pitch = parseFloat(query.pitch);
     }
+    if (query.lang !== undefined) {
+        state.lang = query.lang;
+    }
 
     const list = {
         google: googleApi,
@@ -39,12 +43,15 @@
 
     let updateUrlTimeout;
     function updateUrl() {
+        history.replaceState({}, document.title, window.buildQuery(state, secondApi.type));
+    }
+    function lazyUpdateUrl() {
         if (updateUrlTimeout) {
             return;
         }
 
         updateUrlTimeout = setTimeout(() => {
-            history.replaceState({}, document.title, window.buildQuery(state, secondApi.type));
+            updateUrl();
             updateUrlTimeout = undefined;
         }, 1000);
     }
@@ -72,7 +79,7 @@
             state.rotation = params.rotation;
             state.pitch = params.pitch;
 
-            updateUrl();
+            lazyUpdateUrl();
         }
 
         if (firstApi === api) {
@@ -89,27 +96,61 @@
     firstApi.init('map1');
     secondApi.init('map2');
 
-    const select = document.getElementById('select');
+    const secondApiSelect = document.getElementById('apiSelect');
     for (const name in list) {
         const option = document.createElement('option');
         option.value = name;
         option.text = name;
-        select.appendChild(option);
+        secondApiSelect.appendChild(option);
     }
 
-    const onChange = () => {
+    const secondApiOnChange = () => {
         if (secondApi) {
             secondApi.hide();
         }
 
-        secondApi = list[select.value];
+        secondApi = list[secondApiSelect.value];
         secondApi.init('map2');
 
-        updateUrl();
+        lazyUpdateUrl();
     };
 
-    select.addEventListener('change', onChange);
-    select.value = secondApi.type;
+    secondApiSelect.addEventListener('change', secondApiOnChange);
+    secondApiSelect.value = secondApi.type;
+
+    const langSelect = document.getElementById('langSelect');
+    for (const lang of ['en', 'ar', 'ru']) {
+        const option = document.createElement('option');
+        option.value = lang;
+        option.text = lang;
+        langSelect.appendChild(option);
+    }
+    langSelect.addEventListener('change', () => {
+        state.lang = langSelect.value;
+        updateUrl();
+        location.reload();
+    });
+    langSelect.value = state.lang;
+
+    // Вставляем тег google api, потому что только там язык указывается
+    const googleScriptTag = document.createElement('script');
+    googleScriptTag.setAttribute(
+        'src',
+        `https://maps.googleapis.com/maps/api/js?key=AIzaSyDHYsg3_w2BODxtEBatRKHeNKm1Z8ZLRdY&callback=apiLoaded&language=${state.lang}`,
+    );
+    googleScriptTag.setAttribute('async', '');
+    googleScriptTag.setAttribute('defer', '');
+    document.head.appendChild(googleScriptTag);
+
+    // Вставляем тег yandex api, потому что только там язык указывается
+    const yandexScriptTag = document.createElement('script');
+    yandexScriptTag.setAttribute(
+        'src',
+        `https://api-maps.yandex.ru/2.1/?onload=apiLoaded&apikey=0bd53f41-0662-4ef9-a4b2-d4a6d074c1c2&lang=${state.lang}`,
+    );
+    yandexScriptTag.setAttribute('async', '');
+    yandexScriptTag.setAttribute('defer', '');
+    document.head.appendChild(yandexScriptTag);
 
     /**
      * Callback, который вызывается по загрузке скриптов карт
@@ -122,6 +163,4 @@
             secondApi.init('map2');
         }
     };
-
-    ymaps.ready(window.apiLoaded);
 })();

@@ -36,6 +36,15 @@ const mapboxApi = {
             style: 'mapbox://styles/mapbox/streets-v11',
         });
 
+        this.map.once('load', () => {
+            // Костыль меняющий язык в карте с английского на нужный
+            const style = this.map.getStyle();
+            const newStyle = JSON.parse(
+                JSON.stringify(style).replaceAll('name_en', `name_${state.lang}`),
+            );
+            this.map.setStyle(newStyle);
+        });
+
         this.map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'bottom-right');
 
         this.map.on('move', () => {
