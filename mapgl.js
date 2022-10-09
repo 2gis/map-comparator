@@ -19,20 +19,28 @@ const mapglApi = {
 
         const wrapper = document.getElementById(elementId);
         wrapper.appendChild(this.container);
-
         this.map = new mapgl.Map(this.container, {
             center: [state.lng, state.lat],
             zoom: state.zoom,
             rotation: state.rotation,
             pitch: state.pitch,
             zoomControl: false,
-            key: '042b5b75-f847-4f2a-b695-b5f58adc9dfd',
-            style: 'eb10e2c3-3c28-4b81-b74b-859c9c4cf47e',
+            // key: '042b5b75-f847-4f2a-b695-b5f58adc9dfd',
+            // style: 'eb10e2c3-3c28-4b81-b74b-859c9c4cf47e',
+
+            // Смотрим времено на d1, чтоб на gitex ничего не отвалилось
+            style: '//dmm-mapgl-js-api.on-premise.2gis.dev/style/',
+            styleOptions: {
+                iconsPath: '//dmm-mapgl-js-api.on-premise.2gis.dev/style/images/',
+                fontsPath: '//dmm-mapgl-js-api.on-premise.2gis.dev/style/fonts/',
+            },
+            key: '25cd9004-f67b-4610-9cf0-00ff0127a790',
+
             useRtlTextPlugin: 'always-on',
             lang: state.lang,
         });
 
-        new mapgl.ZoomControl(this.map, { position: 'topLeft' });
+        https: new mapgl.ZoomControl(this.map, { position: 'topLeft' });
 
         window.addEventListener('resize', () => this.map.invalidateSize());
 
