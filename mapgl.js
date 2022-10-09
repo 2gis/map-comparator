@@ -29,12 +29,12 @@ const mapglApi = {
             // style: 'eb10e2c3-3c28-4b81-b74b-859c9c4cf47e',
 
             // Смотрим времено на d1, чтоб на gitex ничего не отвалилось
-            style: '//dmm-mapgl-js-api.on-premise.2gis.dev/style/',
+            style: '//pro-js.4geo.info/style',
             styleOptions: {
-                iconsPath: '//dmm-mapgl-js-api.on-premise.2gis.dev/style/images/',
-                fontsPath: '//dmm-mapgl-js-api.on-premise.2gis.dev/style/fonts/',
+                iconsPath: '//pro-js.4geo.info/style/images/',
+                fontsPath: '//pro-js.4geo.info/style/fonts/',
             },
-            key: '25cd9004-f67b-4610-9cf0-00ff0127a790',
+            key: 'b90da7ab-79c8-4148-9ded-b1d344b65432',
 
             useRtlTextPlugin: 'always-on',
             lang: state.lang,
