@@ -25,17 +25,8 @@ const mapglApi = {
             rotation: state.rotation,
             pitch: state.pitch,
             zoomControl: false,
-            // key: '042b5b75-f847-4f2a-b695-b5f58adc9dfd',
-            // style: 'eb10e2c3-3c28-4b81-b74b-859c9c4cf47e',
-
-            // Смотрим времено на d1, чтоб на gitex ничего не отвалилось
-            style: '//pro-js.4geo.info/style',
-            styleOptions: {
-                iconsPath: '//pro-js.4geo.info/style/images/',
-                fontsPath: '//pro-js.4geo.info/style/fonts/',
-            },
-            key: 'b90da7ab-79c8-4148-9ded-b1d344b65432',
-
+            key: '042b5b75-f847-4f2a-b695-b5f58adc9dfd',
+            style: 'eb10e2c3-3c28-4b81-b74b-859c9c4cf47e',
             useRtlTextPlugin: 'always-on',
             lang: state.lang,
         });
