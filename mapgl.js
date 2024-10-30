@@ -29,6 +29,9 @@ const mapglApi = {
             style: 'eb10e2c3-3c28-4b81-b74b-859c9c4cf47e',
             useRtlTextPlugin: 'always-on',
             lang: state.lang,
+            styleState: {
+                globeEnabled: true
+            }
         });
 
         https: new mapgl.ZoomControl(this.map, { position: 'topLeft' });

@@ -152,6 +152,13 @@
     yandexScriptTag.setAttribute('defer', '');
     document.head.appendChild(yandexScriptTag);
 
+    const mapGlApiUrl = query.mapglUrl ?? 'https://mapgl.2gis.com/api/js';
+    const mapglScriptTag = document.createElement('script');
+    mapglScriptTag.setAttribute('src', `${mapGlApiUrl}?callback=apiLoaded`);
+    mapglScriptTag.setAttribute('async', '');
+    mapglScriptTag.setAttribute('defer', '');
+    document.head.appendChild(mapglScriptTag);
+
     /**
      * Callback, который вызывается по загрузке скриптов карт
      */

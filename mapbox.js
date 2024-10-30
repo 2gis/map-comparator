@@ -33,7 +33,6 @@ const mapboxApi = {
             pitch: state.pitch,
             bearing: -state.rotation,
             container: this.container,
-            style: 'mapbox://styles/mapbox/streets-v11',
         });
 
         this.map.once('load', () => {
