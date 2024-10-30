@@ -19,7 +19,8 @@ const mapglApi = {
 
         const wrapper = document.getElementById(elementId);
         wrapper.appendChild(this.container);
-        this.map = new mapgl.Map(this.container, {
+
+        const mapOptions = {
             center: [state.lng, state.lat],
             zoom: state.zoom,
             rotation: state.rotation,
@@ -31,8 +32,17 @@ const mapglApi = {
             lang: state.lang,
             styleState: {
                 globeEnabled: true
-            }
-        });
+            },
+        }
+
+        if(state.tileSet){
+            mapOptions.tileSet = state.tileSet;
+        }
+        if(state.tileServer){
+            mapOptions.tileServer = state.tileServer;
+        }
+
+        this.map = new mapgl.Map(this.container, mapOptions);
 
         https: new mapgl.ZoomControl(this.map, { position: 'topLeft' });
 

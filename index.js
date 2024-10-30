@@ -2,6 +2,8 @@
     window.state = {
         lng: 55.14903,
         lat: 25.08736,
+        tileSet: null,
+        tileServer: null,
         zoom: 17,
         rotation: 0,
         pitch: 0,
@@ -11,6 +13,12 @@
     const query = window.parseQuery();
     if (query.lng !== undefined) {
         state.lng = parseFloat(query.lng);
+    }
+    if (query.tileSet !== undefined) {
+        state.tileSet = query.tileSet;
+    }
+    if (query.tileServer !== undefined) {
+        state.tileServer = query.tileServer;
     }
     if (query.lat !== undefined) {
         state.lat = parseFloat(query.lat);
