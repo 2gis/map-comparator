@@ -8,32 +8,48 @@
         rotation: 0,
         pitch: 0,
         lang: 'en',
+        styleId: 'eb10e2c3-3c28-4b81-b74b-859c9c4cf47e',
     };
 
-    const query = window.parseQuery();
-    if (query.lng !== undefined) {
-        state.lng = parseFloat(query.lng);
+    function validateParam(param) {
+        if (
+            param === undefined || 
+            param === null || 
+            (typeof param === 'string' && param.trim().length === 0)
+        ) {
+            return false;
+        }
+        return true;
     }
-    if (query.tileSet !== undefined) {
-        state.tileSet = query.tileSet;
+
+    const currentURL = new URL(window.location.href);
+    const searchParams = currentURL.searchParams;
+    if (validateParam(searchParams.get('lng'))) {
+        state.lng = parseFloat(searchParams.get('lng'));
     }
-    if (query.tileServer !== undefined) {
-        state.tileServer = query.tileServer;
+    if (validateParam(searchParams.get('tileSet'))) {
+        state.tileSet = searchParams.get('tileSet');
     }
-    if (query.lat !== undefined) {
-        state.lat = parseFloat(query.lat);
+    if (validateParam(searchParams.get('tileServer'))) {
+        state.tileServer = searchParams.get('tileServer');
     }
-    if (query.zoom !== undefined) {
-        state.zoom = parseFloat(query.zoom);
+    if (validateParam(searchParams.get('styleId'))) {
+        state.styleId = searchParams.get('styleId');
     }
-    if (query.rotation !== undefined) {
-        state.rotation = parseFloat(query.rotation);
+    if (validateParam(searchParams.get('lat'))) {
+        state.lat = parseFloat(searchParams.get('lat'));
     }
-    if (query.pitch !== undefined) {
-        state.pitch = parseFloat(query.pitch);
+    if (validateParam(searchParams.get('zoom'))) {
+        state.zoom = parseFloat(searchParams.get('zoom'));
     }
-    if (query.lang !== undefined) {
-        state.lang = query.lang;
+    if (validateParam(searchParams.get('rotation'))) {
+        state.rotation = parseFloat(searchParams.get('rotation'));
+    }
+    if (validateParam(searchParams.get('pitch'))) {
+        state.pitch = parseFloat(searchParams.get('pitch'));
+    }
+    if (validateParam(searchParams.get('lang'))) {
+        state.lang = searchParams.get('lang');
     }
 
     const list = {
@@ -45,13 +61,13 @@
 
     const firstApi = mapglApi;
     let secondApi = list.google;
-    if (query.compare !== undefined && list[query.compare]) {
-        secondApi = list[query.compare];
+    if (searchParams.get('compare') !== undefined && list[searchParams.get('compare')]) {
+        secondApi = list[searchParams.get('compare')];
     }
 
     let updateUrlTimeout;
     function updateUrl() {
-        history.replaceState({}, document.title, window.buildQuery(state, secondApi.type));
+        history.replaceState({}, document.title, window.buildNextURL(state, secondApi.type));
     }
     function lazyUpdateUrl() {
         if (updateUrlTimeout) {
@@ -160,7 +176,7 @@
     yandexScriptTag.setAttribute('defer', '');
     document.head.appendChild(yandexScriptTag);
 
-    const mapGlApiUrl = query.mapglUrl ?? 'https://mapgl.2gis.com/api/js';
+    const mapGlApiUrl = searchParams.get('mapglUrl') ?? 'https://mapgl.2gis.com/api/js';
     const mapglScriptTag = document.createElement('script');
     mapglScriptTag.setAttribute('src', `${mapGlApiUrl}?callback=apiLoaded`);
     mapglScriptTag.setAttribute('async', '');
