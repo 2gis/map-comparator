@@ -9,6 +9,9 @@
         <script src="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.js"></script>
         <link href="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.css" rel="stylesheet" />
 
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
         <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
         <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
         <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
@@ -46,11 +49,13 @@
                 position: absolute;
                 top: 10px;
                 right: 10px;
+                z-index: 1000;
             }
             #langSelect {
                 position: absolute;
                 top: 35px;
                 right: 10px;
+                z-index: 1000;
             }
         </style>
     </head>
@@ -69,6 +74,7 @@
         <script src="./mapbox.js"></script>
         <script src="./here.js"></script>
         <script src="./yandex.js"></script>
+        <script src="./osm.js"></script>
         <script src="./index.js"></script>
     </body>
 </html>

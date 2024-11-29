@@ -57,6 +57,7 @@
         mapbox: mapboxApi,
         here: hereApi,
         yandex: yandexApi,
+        osm: osmApi,
     };
 
     const firstApi = mapglApi;
