@@ -171,11 +171,20 @@
     const yandexScriptTag = document.createElement('script');
     yandexScriptTag.setAttribute(
         'src',
-        `https://api-maps.yandex.ru/2.1/?onload=apiLoaded&apikey=0bd53f41-0662-4ef9-a4b2-d4a6d074c1c2&lang=${state.lang}`,
+        `https://api-maps.yandex.ru/v3/?apikey=0bd53f41-0662-4ef9-a4b2-d4a6d074c1c2&lang=${state.lang}_RU`,
     );
     yandexScriptTag.setAttribute('async', '');
     yandexScriptTag.setAttribute('defer', '');
     document.head.appendChild(yandexScriptTag);
+    yandexScriptTag.onload = async () => {
+        await ymaps3.ready;
+        ymaps3.import.registerCdn('https://cdn.jsdelivr.net/npm/{package}', [
+            '@yandex/ymaps3-default-ui-theme@0',
+        ]);
+        const { YMapZoomControl } = await ymaps3.import('@yandex/ymaps3-default-ui-theme');
+        ymaps3.YMapZoomControl = YMapZoomControl;
+        window.apiLoaded();
+    }
 
     const mapGlApiUrl = searchParams.get('mapglUrl') ?? 'https://mapgl.2gis.com/api/js';
     const mapglScriptTag = document.createElement('script');
