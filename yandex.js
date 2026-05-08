@@ -60,7 +60,7 @@ const yandexApi = {
         );
         this.map.addChild(controls);
 
-        this.map.addChild(new ymaps3.YMapDefaultSchemeLayer());
+        this.map.addChild(new ymaps3.YMapDefaultSchemeLayer({ theme: state.theme }));
         this.map.addChild(
             new ymaps3.YMapListener({
                 onUpdate: () => {
@@ -77,7 +77,7 @@ const yandexApi = {
     },
 
     update() {
-        if (!this.map) {
+        if (!this.map || !window.ymaps3.YMapDefaultSchemeLayer) {
             return;
         }
 
@@ -91,6 +91,12 @@ const yandexApi = {
                 tilt: deg2Rad(state.pitch), 
             },
         });
+
+        this.map.children.forEach((child) => {
+            if (child instanceof ymaps3.YMapDefaultSchemeLayer) {
+                child.update({ theme: state.theme });
+            }
+        })
     },
 
     hide() {

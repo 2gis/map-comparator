@@ -61,6 +61,14 @@
                 (зачем - не знаю), поэтому чтобы контролы были видны - делаем так */
                 z-index: 1000;
             }
+            #themeSelect {
+                position: absolute;
+                top: 60px;
+                right: 10px;
+                /* Лефлет накладывает карту с большим z-уровнем 
+                (зачем - не знаю), поэтому чтобы контролы были видны - делаем так */
+                z-index: 1000;
+            }
         </style>
     </head>
     <body>
@@ -71,6 +79,7 @@
 
         <select id="apiSelect"></select>
         <select id="langSelect"></select>
+        <select id="themeSelect"></select>
 
         <script src="./utils.js"></script>
         <script src="./mapgl.js"></script>

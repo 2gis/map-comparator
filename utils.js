@@ -20,6 +20,7 @@
 
         searchParams.set('compare', compare);
         searchParams.set('lang', options.lang);
+        searchParams.set('compareTheme', options.theme);
 
         return nextURL.toString();
     };
