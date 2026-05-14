@@ -15,16 +15,12 @@
         searchParams.set('lat', options.lat.toFixed(precision));
         searchParams.set('zoom', options.zoom.toFixed(precision));
 
-        if (rotation !== 0) {
-            searchParams.set('rotation', rotation.toString());
-        }
-
-        if (pitch !== 0) {
-            searchParams.set('pitch', pitch.toString());
-        }
+        rotation ? searchParams.set('rotation', rotation.toString()) : searchParams.delete('rotation');
+        pitch ? searchParams.set('pitch', pitch.toString()) : searchParams.delete('pitch');
 
         searchParams.set('compare', compare);
         searchParams.set('lang', options.lang);
+        searchParams.set('compareTheme', options.theme);
 
         return nextURL.toString();
     };

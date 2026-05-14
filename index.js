@@ -1,4 +1,7 @@
 (() => {
+    const LANGS = ['en', 'ar', 'ru'];
+    const THEMES = ['light', 'dark'];
+
     window.state = {
         lng: 55.14903,
         lat: 25.08736,
@@ -7,8 +10,9 @@
         zoom: 17,
         rotation: 0,
         pitch: 0,
-        lang: 'en',
+        lang: LANGS[0],
         styleId: 'eb10e2c3-3c28-4b81-b74b-859c9c4cf47e',
+        theme: THEMES[0],
     };
 
     function validateParam(param) {
@@ -50,6 +54,9 @@
     }
     if (validateParam(searchParams.get('lang'))) {
         state.lang = searchParams.get('lang');
+    }
+    if (validateParam(searchParams.get('compareTheme'))) {
+        state.theme = searchParams.get('compareTheme');
     }
 
     const list = {
@@ -137,6 +144,8 @@
         secondApi = list[secondApiSelect.value];
         secondApi.init('map2');
 
+        themeSelect.style.visibility = secondApi.type === 'yandex' ? 'visible' : 'hidden';
+
         lazyUpdateUrl();
     };
 
@@ -144,7 +153,7 @@
     secondApiSelect.value = secondApi.type;
 
     const langSelect = document.getElementById('langSelect');
-    for (const lang of ['en', 'ar', 'ru']) {
+    for (const lang of LANGS) {
         const option = document.createElement('option');
         option.value = lang;
         option.text = lang;
@@ -156,6 +165,25 @@
         location.reload();
     });
     langSelect.value = state.lang;
+
+    const themeSelect = document.getElementById('themeSelect');
+    for (const theme of THEMES) {
+        const option = document.createElement('option');
+        option.value = theme;
+        option.text = theme;
+        themeSelect.appendChild(option);
+    }
+    themeSelect.addEventListener('change', () => {
+        state.theme = themeSelect.value;
+        if (secondApi && secondApi.type === 'yandex') {
+            secondApi.update();
+        }
+        updateUrl();
+    });
+    themeSelect.value = state.theme;
+    if (secondApi && secondApi.type !== 'yandex') {
+        themeSelect.style.visibility = 'hidden';
+    }
 
     // Вставляем тег google api, потому что только там язык указывается
     const googleScriptTag = document.createElement('script');
@@ -171,11 +199,20 @@
     const yandexScriptTag = document.createElement('script');
     yandexScriptTag.setAttribute(
         'src',
-        `https://api-maps.yandex.ru/2.1/?onload=apiLoaded&apikey=0bd53f41-0662-4ef9-a4b2-d4a6d074c1c2&lang=${state.lang}`,
+        `https://api-maps.yandex.ru/v3/?apikey=0bd53f41-0662-4ef9-a4b2-d4a6d074c1c2&lang=${state.lang}_RU`,
     );
     yandexScriptTag.setAttribute('async', '');
     yandexScriptTag.setAttribute('defer', '');
     document.head.appendChild(yandexScriptTag);
+    yandexScriptTag.onload = async () => {
+        await ymaps3.ready;
+        ymaps3.import.registerCdn('https://cdn.jsdelivr.net/npm/{package}', [
+            '@yandex/ymaps3-default-ui-theme@0',
+        ]);
+        const { YMapZoomControl } = await ymaps3.import('@yandex/ymaps3-default-ui-theme');
+        ymaps3.YMapZoomControl = YMapZoomControl;
+        window.apiLoaded();
+    }
 
     const mapGlApiUrl = searchParams.get('mapglUrl') ?? 'https://mapgl.2gis.com/api/js';
     const mapglScriptTag = document.createElement('script');

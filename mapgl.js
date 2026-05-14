@@ -31,7 +31,7 @@ const mapglApi = {
             useRtlTextPlugin: 'always-on',
             lang: state.lang,
             styleState: {
-                globeEnabled: true
+                globeEnabled: true,
             },
         }
 

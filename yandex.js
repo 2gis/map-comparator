@@ -1,3 +1,11 @@
+function deg2Rad(deg) {
+    return deg * Math.PI / 180;
+}
+
+function rad2Deg(rad) {
+    return rad * 180 / Math.PI;
+}
+
 const yandexApi = {
     type: 'yandex',
 
@@ -5,7 +13,7 @@ const yandexApi = {
     container: undefined,
 
     init(elementId) {
-        if (!window.ymaps || !window.ymaps.Map) {
+        if (!window.ymaps3 || !window.ymaps3.YMap || !window.ymaps3.YMapZoomControl) {
             return;
         }
 
@@ -20,35 +28,75 @@ const yandexApi = {
         const wrapper = document.getElementById(elementId);
         wrapper.appendChild(this.container);
 
-        this.map = new ymaps.Map(this.container, {
-            center: [state.lat, state.lng],
-            zoom: state.zoom,
-            controls: ['zoomControl', 'typeSelector'],
+        this.map = new ymaps3.YMap(this.container, {
+            location: {
+                center: [state.lng, state.lat],
+                zoom: state.zoom,
+            },
+            camera: {
+                azimuth: deg2Rad(state.rotation),
+                tilt: deg2Rad(state.pitch), 
+            },
+            behaviors: [
+                'drag',
+                'pinchZoom',
+                'scrollZoom',
+                'dblClick',
+                'magnifier',
+                'mouseRotate',
+                'mouseTilt',
+                'pinchRotate',
+                'panTilt',
+            ],
+            mode: 'vector',
         });
 
-        const typeSelector = this.map.controls.get('typeSelector');
-        typeSelector.options.set('position', { top: 10, left: 10 });
-
-        this.map.events.add('boundschange', () => {
-            const center = this.map.getCenter();
-            window.updateAnotherMap(this, {
-                lng: center[1],
-                lat: center[0],
-                zoom: this.map.getZoom(),
-                rotation: 0,
-                pitch: 0,
-            });
+        const controls = new ymaps3.YMapControls({
+            position: 'top left',
+            orientation: 'vertical',
         });
+        controls.addChild(
+            new ymaps3.YMapZoomControl({ easing: 'linear' })
+        );
+        this.map.addChild(controls);
+
+        this.map.addChild(new ymaps3.YMapDefaultSchemeLayer({ theme: state.theme }));
+        this.map.addChild(
+            new ymaps3.YMapListener({
+                onUpdate: () => {
+                    window.updateAnotherMap(this, {
+                        lng: this.map.center[0],
+                        lat: this.map.center[1],
+                        zoom: this.map.zoom,
+                        rotation: rad2Deg(this.map.azimuth),
+                        pitch: rad2Deg(this.map.tilt),
+                    });
+                },
+            })
+        );
     },
 
     update() {
-        if (!this.map) {
+        if (!this.map || !window.ymaps3.YMapDefaultSchemeLayer) {
             return;
         }
 
-        const { lng, lat, zoom } = state;
-        this.map.setCenter([lat, lng]);
-        this.map.setZoom(zoom);
+        this.map.update({
+            location: {
+                center: [state.lng, state.lat],
+                zoom: state.zoom,
+            },
+            camera: {
+                azimuth: deg2Rad(state.rotation),
+                tilt: deg2Rad(state.pitch), 
+            },
+        });
+
+        this.map.children.forEach((child) => {
+            if (child instanceof ymaps3.YMapDefaultSchemeLayer) {
+                child.update({ theme: state.theme });
+            }
+        })
     },
 
     hide() {
